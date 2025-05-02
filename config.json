@@ -1,0 +1,7 @@
+{
+    "model_type": "keras",
+    "framework": "tensorflow",
+    "model_name": "smartbool",
+    "input_shape": [224, 224, 3],
+    "classes": ["and", "nand", "nor", "not", "or", "xnor", "xor"]
+}
