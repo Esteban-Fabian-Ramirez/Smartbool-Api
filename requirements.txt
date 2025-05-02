@@ -4,3 +4,4 @@ tensorflow==2.12.0
 pillow
 numpy
 huggingface_hub
+python-multipart
