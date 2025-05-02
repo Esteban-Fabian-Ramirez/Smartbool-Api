@@ -1,7 +1,8 @@
 fastapi
 uvicorn[standard]
-tensorflow==2.12.0
 pillow
 numpy
 huggingface_hub
 python-multipart
+tensorflow>=2.9.0  # Especifica una versión
+keras>=2.9.0       # Especifica una versión (si está separado)
