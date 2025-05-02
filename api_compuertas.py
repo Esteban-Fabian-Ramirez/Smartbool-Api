@@ -36,7 +36,12 @@ def cargar_modelo_huggingface():
 @app.on_event("startup")
 def startup_event():
     global model
-    model = cargar_modelo_huggingface()
+    try:
+        print("🚀 Cargando modelo en startup...")
+        model = cargar_modelo_huggingface()
+        print("✅ Modelo cargado correctamente.")
+    except Exception as e:
+        print(f"❌ Error cargando modelo en startup: {e}")
 
 # Función de predicción
 def predecir_compuerta(imagen_bytes):
