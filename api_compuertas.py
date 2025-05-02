@@ -7,6 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 from huggingface_hub import hf_hub_download, login
 from PIL import Image
+import uvicorn
 
 # Configuración para usar tensorflow como backend
 os.environ["KERAS_BACKEND"] = "tensorflow"
@@ -67,3 +68,8 @@ async def predecir(file: UploadFile = File(...)):
         return {"resultado": resultado}
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+
+if __name__ == "__main__":
+    # Obtener el valor del puerto desde la variable de entorno o usar 8000 como valor predeterminado
+    port = int(os.getenv("PORT", 8000))  # 8000 como fallback
+    uvicorn.run("api_compuertas:app", host="0.0.0.0", port=port, reload=True)
