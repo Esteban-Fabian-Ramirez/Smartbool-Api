@@ -72,4 +72,4 @@ async def predecir(file: UploadFile = File(...)):
 if __name__ == "__main__":
     # Obtener el valor del puerto desde la variable de entorno o usar 8000 como valor predeterminado
     port = int(os.getenv("PORT", 8000))  # 8000 como fallback
-    uvicorn.run("api_compuertas:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("api_compuertas:app", host="0.0.0.0", port=port)
