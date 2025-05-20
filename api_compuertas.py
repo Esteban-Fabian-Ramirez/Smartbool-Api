@@ -13,6 +13,7 @@ import re
 import numpy as np
 import os
 import io
+from PIL import ImageOps
 
 # Configuración para usar tensorflow como backend
 os.environ["KERAS_BACKEND"] = "tensorflow"
@@ -26,6 +27,8 @@ CLASSES = ['and', 'nand', 'nor', 'not', 'or', 'xnor', 'xor']
 # Clasificar imagen según contenido
 def clasificar_imagen_contenido(img: Image.Image) -> str:
     text = pytesseract.image_to_string(img).lower()
+    if "and" in text:
+        print("OCR también detecta 'and'")
     if re.search(r'(and|or|not|xor|nand|nor)', text):
         return 'expresion'
     elif re.search(r'[01]\s+[01]', text) and len(text.splitlines()) > 2:
@@ -38,8 +41,9 @@ def procesar_expresion(expr_texto: str):
     expr_texto = expr_texto.upper().replace("AND", "&").replace("OR", "|").replace("NOT", "~")
     expr = simplify_logic(expr_texto)
     variables = sorted(expr.free_symbols, key=lambda x: str(x))
-    tabla = list(truth_table(expr, variables))
-    return str(expr), tabla
+    tabla = [[*entrada, int(bool(salida))] for entrada, salida in truth_table(expr, variables)]
+    kmap = generar_karnaugh(variables, tabla)
+    return str(expr), tabla, kmap
 
 # Procesar tabla de verdad
 def procesar_tabla(texto_tabla: str):
@@ -77,7 +81,7 @@ async def analizar(file: UploadFile = File(...)):
     try:
         if tipo == 'expresion':
             texto = pytesseract.image_to_string(img)
-            expresion, tabla, kmap = procesar_tabla(texto)
+            expresion, tabla, kmap = procesar_expresion(texto)
         elif tipo == 'tabla':
             texto = pytesseract.image_to_string(img)
             expresion, tabla, kmap = procesar_tabla(texto)
@@ -113,13 +117,16 @@ def startup_event():
 
 # Predicción
 def predecir_compuerta(imagen_bytes):
-    img = Image.open(io.BytesIO(imagen_bytes)).convert('RGB')  # 3 canales
+    img = Image.open(io.BytesIO(imagen_bytes)).convert('RGB')  # Abre la imagen primero
+    img = ImageOps.invert(img)  # si el fondo es blanco
     img = img.resize((224, 224))
-    img = np.array(img)
-    img = img / 255.0
+    img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
     pred = model.predict(img)
     clase_idx = np.argmax(pred, axis=1)[0]
+    print("Predicciones:", pred)
+    print("Clase predicha:", CLASSES[clase_idx])
+    print(pred)
     return CLASSES[clase_idx]
 
 @app.post("/predecir")
