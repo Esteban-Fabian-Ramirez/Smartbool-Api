@@ -54,7 +54,6 @@ brew install tesseract
 git clone https://github.com/Esteban-Fabian-Ramirez/Smartbool-Api.git
 ```
 ### 2. Crear y activar entorno virtual (opcional pero recomendado)
-### 1. Clonar el repositorio
 ```bash
 python -m venv venv
 ```
