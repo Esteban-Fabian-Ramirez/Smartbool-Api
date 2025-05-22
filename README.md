@@ -91,9 +91,36 @@ Esto levantará el servidor en http://127.0.0.1:8000
 curl -X POST http://127.0.0.1:8000/predecir \
   -F "file=@ruta/a/tu_imagen.png"
 ```
-### 🧠 Ejemplo para /calcular_expresion
+##### 🧠 Ejemplo para /calcular_expresion
 ```bash
 curl -X POST http://127.0.0.1:8000/calcular_expresion \
   -H "Content-Type: application/json" \
   -d '{"expresion": "(A and B) or not C"}'
+```
+### 🧪 Funcionalidades de análisis
+#### 🟦 1. Generación de Diagramas de Karnaugh
+##### El archivo detectar_kmap.py permite:
+
+- 🧠 Recibir una expresión booleana (por ejemplo: A and B or not C)
+
+- 📊 Generar automáticamente su diagrama de Karnaugh
+
+- 📎 Guardar o retornar la imagen resultante para visualización o descarga
+
+#### ▶️ Uso básico:
+```bash
+python detectar_kmap.py --expresion "A & B | ~C"
+```
+#### 🟦 2. Detección de Tablas de Verdad desde Imágenes
+##### El archivo modelo-easyocr.py permite:
+
+- 📷 Leer tablas de verdad escritas o impresas desde una imagen
+
+- 🔤 Extraer texto con EasyOCR
+
+- 📈 Convertir la tabla en una estructura digital para análisis posterior
+
+#### ▶️ Uso básico:
+```bash
+python modelo-easyocr.py --imagen ruta/a/la/tabla.jpg
 ```
