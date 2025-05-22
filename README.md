@@ -48,9 +48,22 @@ sudo apt install tesseract-ocr
 ```bash
 brew install tesseract
 ```
-🚀 Instrucciones para correr el proyecto
-1. Clonar el repositorio
+## 🚀 Instrucciones para correr el proyecto
+### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/tu_usuario/tu_repositorio.git
-cd tu_repositorio
+git clone https://github.com/Esteban-Fabian-Ramirez/Smartbool-Api.git
+```
+### 2. Crear y activar entorno virtual (opcional pero recomendado)
+### 1. Clonar el repositorio
+```bash
+python -m venv venv
+```
+#### Activar:
+##### En Linux/macOS
+```bash
+source venv/bin/activate
+```
+##### En Windows
+```bash
+venv\Scripts\activate
 ```
