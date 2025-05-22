@@ -66,3 +66,34 @@ source venv/bin/activate
 ```bash
 venv\Scripts\activate
 ```
+### 3. Instalar dependencias
+```bash
+pip install -r requirements.txt
+```
+### 4. Coloca el modelo
+Asegúrate de tener el archivo modelo_compuertas.keras en la raíz del proyecto.
+## 🔌 Comandos para correr la API
+### Ejecutar localmente:
+```bash
+python api_compuertas.py
+```
+Esto levantará el servidor en http://127.0.0.1:8000
+### 📬 Endpoints disponibles
+| Método | Ruta                   | Descripción                                         |
+| ------ | ---------------------- | --------------------------------------------------- |
+| POST   | `/predecir`            | Clasifica la compuerta lógica en la imagen          |
+| POST   | `/analizar`            | Detecta si es expresión, tabla o diagrama y procesa |
+| POST   | `/predecir_y_analizar` | Clasifica y genera tabla/expr/mapa                  |
+| POST   | `/calcular_expresion`  | Calcula tabla y Karnaugh desde texto plano          |
+
+### 🧪 Ejemplo con curl
+```bash
+curl -X POST http://127.0.0.1:8000/predecir \
+  -F "file=@ruta/a/tu_imagen.png"
+```
+### 🧠 Ejemplo para /calcular_expresion
+```bash
+curl -X POST http://127.0.0.1:8000/calcular_expresion \
+  -H "Content-Type: application/json" \
+  -d '{"expresion": "(A and B) or not C"}'
+```
