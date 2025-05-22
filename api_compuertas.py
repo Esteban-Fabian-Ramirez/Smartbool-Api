@@ -117,16 +117,15 @@ def startup_event():
 
 # Predicción
 def predecir_compuerta(imagen_bytes):
-    img = Image.open(io.BytesIO(imagen_bytes)).convert('RGB')  # Abre la imagen primero
-    img = ImageOps.invert(img)  # si el fondo es blanco
+    img = Image.open(io.BytesIO(imagen_bytes)).convert('RGB')
+    #img = ImageOps.invert(img)  # solo si es necesario
     img = img.resize((224, 224))
     img = np.array(img) / 255.0
     img = np.expand_dims(img, axis=0)
     pred = model.predict(img)
     clase_idx = np.argmax(pred, axis=1)[0]
-    print("Predicciones:", pred)
-    print("Clase predicha:", CLASSES[clase_idx])
-    print(pred)
+    print("🔍 Predicciones brutas:", pred)
+    print("🎯 Clase predicha:", CLASSES[clase_idx])
     return CLASSES[clase_idx]
 
 @app.post("/predecir")
@@ -164,7 +163,7 @@ async def predecir_y_analizar(file: UploadFile = File(...)):
         expr_simplificada = str(simplify_logic(expr)) if expr else "No reconocida"
         variables = (A, B) if clase not in ['not'] else (A,)
         tabla = list(truth_table(expr, variables))
-        tabla_lista = [[*inputs, salida] for inputs, salida in tabla]
+        tabla_lista = [[*inputs, int(bool(salida))] for inputs, salida in tabla]
         kmap = generar_karnaugh(variables, tabla_lista)
 
         return {
