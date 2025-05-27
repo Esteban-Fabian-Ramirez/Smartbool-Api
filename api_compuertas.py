@@ -14,6 +14,7 @@ import numpy as np
 import os
 import io
 from PIL import ImageOps
+import matplotlib.pyplot as plt
 
 # Configuración para usar tensorflow como backend
 os.environ["KERAS_BACKEND"] = "tensorflow"
@@ -147,7 +148,22 @@ async def predecir_y_analizar(file: UploadFile = File(...)):
 
     imagen_bytes = await file.read()
     try:
+        # Cargar imagen con PIL
+        image = Image.open(io.BytesIO(imagen_bytes))
+
+        # Mostrar la imagen con matplotlib (se guarda en buffer, no se muestra en pantalla)
+        plt.figure(figsize=(4, 4))
+        plt.imshow(image)
+        plt.axis('off')
+        plt.title("Imagen recibida para predicción")
+
+        # Guardar imagen renderizada como archivo temporal (opcional)
+        plt.savefig("imagen_renderizada.png")  # Esto guarda la imagen en el sistema
+
+        # Continuar con la predicción
         clase = predecir_compuerta(imagen_bytes)
+
+        # Lógica para expresión booleana y karnaugh
         A, B = symbols('A B')
         expr_map = {
             'and': And(A, B),
@@ -161,7 +177,7 @@ async def predecir_y_analizar(file: UploadFile = File(...)):
 
         expr = expr_map.get(clase)
         expr_simplificada = str(simplify_logic(expr)) if expr else "No reconocida"
-        variables = (A, B) if clase not in ['not'] else (A,)
+        variables = (A, B) if clase != 'not' else (A,)
         tabla = list(truth_table(expr, variables))
         tabla_lista = [[*inputs, int(bool(salida))] for inputs, salida in tabla]
         kmap = generar_karnaugh(variables, tabla_lista)
@@ -172,6 +188,7 @@ async def predecir_y_analizar(file: UploadFile = File(...)):
             "tabla_verdad": tabla_lista,
             "karnaugh": kmap
         }
+
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
